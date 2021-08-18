@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    path('music/', views.CommentList.as_view()),
+    path('youtubeclone_app/', views.CommentList.as_view()),
 ]
