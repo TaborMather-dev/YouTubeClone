@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.http.response import Http404
 from .models import Comment, Reply
 from .serializer import CommentSerializer, ReplySerializer
 from rest_framework.views import APIView
@@ -8,7 +8,6 @@ from rest_framework import status
 
 # Create your views here.
 class CommentList(APIView):
-
     def get(self, request):
         comment = Comment.objects.all()
         serializer = CommentSerializer(comment, many=True)
@@ -21,18 +20,18 @@ class CommentList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CommentDetail(APIView):
 
+class CommentDetail(APIView):
     def get_objects(self, video_id):
         try:
             return Comment.objects.get(video_id=video_id)
         except Comment.DoesNotExist:
             raise Http404
-        
+
     def get(self, request, video_id):
         comment = self.get_object(video_id)
         serializer = CommentSerializer(comment, many=True)
-        return Response(serializer.data)        
+        return Response(serializer.data)
 
     def put(self, request, video_id):
         comment = self.get_object(video_id)
@@ -41,11 +40,12 @@ class CommentDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self, request, video_id):
         comment = self.get_object(video_id)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CommentLike(APIView):
     def get_object(self, id):
@@ -68,6 +68,7 @@ class CommentLike(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CommentDislike(APIView):
     def get_object(self, id):
         try:
@@ -89,6 +90,7 @@ class CommentDislike(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ReplyList(APIView):
     def get(self, request):
         reply = Reply.objects.all()
@@ -101,6 +103,7 @@ class ReplyList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ReplyDetail(APIView):
     def get_object(self, comment):
