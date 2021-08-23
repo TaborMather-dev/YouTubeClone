@@ -35,7 +35,7 @@ class CommentDetail(APIView):
 
     def put(self, request, video_id):
         comment = self.get_object(video_id)
-        serializer = CommentSerializer(object, data=request.data)
+        serializer = CommentSerializer(comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
